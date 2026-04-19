@@ -1,6 +1,7 @@
 #include "ggml.h"
 #include "gguf.h"
 
+#include "build-info.h"
 #include "common.h"
 #include "log.h"
 #include "llama.h"
@@ -41,6 +42,12 @@
 #include <string.h>
 #include <fcntl.h>
 #include <io.h>
+#ifndef fileno
+#define fileno _fileno
+#endif
+#ifndef isatty
+#define isatty _isatty
+#endif
 #else
 #include <sys/ioctl.h>
 #include <sys/stat.h>
@@ -372,7 +379,7 @@ void common_init() {
     const char * build_type = " (debug)";
 #endif
 
-    LOG_DBG("build: %d (%s) with %s for %s%s\n", LLAMA_BUILD_NUMBER, LLAMA_COMMIT, LLAMA_COMPILER, LLAMA_BUILD_TARGET, build_type);
+    LOG_DBG("build: %d (%s) with %s for %s%s\n", llama_build_number(), llama_commit(), llama_compiler(), llama_build_target(), build_type);
 }
 
 std::string common_params_get_system_info(const common_params & params) {
